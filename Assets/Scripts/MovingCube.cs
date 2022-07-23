@@ -41,6 +41,10 @@ public class MovingCube : MonoBehaviour
     {
         moveSpeed = 0;
         float hangOver = GetHangOver();
+        if (IsGameOver(hangOver))
+        {
+            return true;
+        }
         float direction = hangOver >= 0 ? 1 : -1;
         if(moveAxis == MoveAxis.x)
         {
@@ -65,8 +69,7 @@ public class MovingCube : MonoBehaviour
         {
             amount = transform.position.z - cubeSpawner.LastCube.transform.position.z;
         }
-        Debug.Log(moveAxis);
-        Debug.Log(amount);
+
         return amount;
     }
     private void SplitCubeOnX(float hangOver, float direction)
@@ -113,5 +116,15 @@ public class MovingCube : MonoBehaviour
 
         Destroy(clone, 2);
     }
-
+    private bool IsGameOver(float hangOver)
+    {
+        float max = moveAxis == MoveAxis.x ? cubeSpawner.LastCube.transform.localScale.x :
+                                             cubeSpawner.LastCube.transform.localScale.z;
+        
+        if (Mathf.Abs(hangOver) > max)
+        {
+            return true;
+        }
+        return false;
+    }
 }
