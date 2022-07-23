@@ -13,7 +13,7 @@ public class CubeSpawner : MonoBehaviour
 
     [field:SerializeField]
     public Transform LastCube { set; get; }
-
+    public MovingCube CurrentCube { set; get; } = null;
     [SerializeField]
     private float colorWeight = 15.0f;
 
@@ -31,16 +31,22 @@ public class CubeSpawner : MonoBehaviour
         }
         else
         {
-            float x = cubeSpawnPoints[(int)moveAxis].position.x;
-            float z = cubeSpawnPoints[(int)moveAxis].position.z;
+            //float x = cubeSpawnPoints[(int)moveAxis].position.x;
+            //float z = cubeSpawnPoints[(int)moveAxis].position.z;
+
+            float x = moveAxis == MoveAxis.x ? cubeSpawnPoints[(int)moveAxis].position.x : LastCube.position.x;
+            float z = moveAxis == MoveAxis.z ? cubeSpawnPoints[(int)moveAxis].position.z : LastCube.position.z;
             float y = LastCube.position.y + movingCubePrefab.localScale.y;
 
             clone.position = new Vector3(x, y, z);
         }
+        clone.localScale = new Vector3(LastCube.localScale.x, movingCubePrefab.localScale.y, LastCube.localScale.z);
         clone.GetComponent<MeshRenderer>().material.color = GetRandomColor();
+        clone.GetComponent<MovingCube>().Setup(this, moveAxis);
         moveAxis = (MoveAxis)(((int)moveAxis + 1) % cubeSpawnPoints.Length);
 
-        LastCube = clone;
+        //LastCube = clone;
+        CurrentCube = clone.GetComponent<MovingCube>();
     }
     private void OnDrawGizmos()
     {
