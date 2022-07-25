@@ -9,12 +9,13 @@ public class MovingCube : MonoBehaviour
     private Vector3 moveDirection;
 
     private CubeSpawner cubeSpawner;
-
+    private PerfectController perfectController;
     private MoveAxis moveAxis;
 
-    public void Setup(CubeSpawner cubeSpawner, MoveAxis moveAxis)
+    public void Setup(CubeSpawner cubeSpawner, PerfectController perfectConroller, MoveAxis moveAxis)
     {
         this.cubeSpawner = cubeSpawner;
+        this.perfectController = perfectConroller;
         this.moveAxis = moveAxis;
 
         if (moveAxis == MoveAxis.x) moveDirection = Vector3.left;
@@ -41,17 +42,24 @@ public class MovingCube : MonoBehaviour
     {
         moveSpeed = 0;
         float hangOver = GetHangOver();
+        //Debug.Log(hangOver);
         if (IsGameOver(hangOver))
         {
             return true;
         }
-        float direction = hangOver >= 0 ? 1 : -1;
-        if(moveAxis == MoveAxis.x)
+        bool isPerfect = perfectController.IsPerfect(hangOver);
+
+        if (isPerfect==false)
         {
-            SplitCubeOnX(hangOver, direction);
-        }
-        else if(moveAxis == MoveAxis.z){
-            SplitCubeOnZ(hangOver, direction);
+            float direction = hangOver >= 0 ? 1 : -1;
+            if (moveAxis == MoveAxis.x)
+            {
+                SplitCubeOnX(hangOver, direction);
+            }
+            else if (moveAxis == MoveAxis.z)
+            {
+                SplitCubeOnZ(hangOver, direction);
+            }
         }
         cubeSpawner.LastCube = this.transform;
         return false;
@@ -126,5 +134,26 @@ public class MovingCube : MonoBehaviour
             return true;
         }
         return false;
+    }
+    public void RecoveryCube()
+    {
+        float recoverySize = 0.1f;
+        if(moveAxis == MoveAxis.x)
+        {
+            float newXSize = transform.localScale.x + recoverySize;
+            float newXPosition = transform.position.x + recoverySize * 0.5f;
+
+            transform.position = new Vector3(newXPosition, transform.position.y, transform.position.z);
+            transform.localScale = new Vector3(newXSize, transform.localScale.y, transform.localScale.z);
+
+        }
+        else
+        {
+            float newZSize = transform.localScale.z + recoverySize;
+            float newZPosition = transform.position.z + recoverySize * 0.5f;
+
+            transform.position = new Vector3(transform.position.x, transform.position.y, newZPosition);
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, newZSize);
+        }
     }
 }

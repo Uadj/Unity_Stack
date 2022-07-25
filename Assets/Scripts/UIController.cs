@@ -38,7 +38,7 @@ public class UIController : MonoBehaviour
         else
         {
             CrownImage.SetActive(true);
-            HighScore.text = PlayerPrefs.GetInt("HighScore").ToString();
+            HighScore.text = "HighScore : " + PlayerPrefs.GetInt("HighScore").ToString();
             HighScore.gameObject.SetActive(true);
         }
         TouchToRestart.SetActive(true);

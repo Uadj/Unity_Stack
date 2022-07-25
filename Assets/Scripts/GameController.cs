@@ -16,7 +16,18 @@ public class GameController : MonoBehaviour
     {
         while (true)
         {
-            
+            if (Input.GetMouseButtonDown(1))
+            {
+                if(cubeSpawner.CurrentCube != null)
+                {
+                    cubeSpawner.CurrentCube.transform.position = cubeSpawner.LastCube.position + Vector3.up * 0.1f;
+                    cubeSpawner.CurrentCube.Arrangement();
+                    currentScore++;
+                    uiController.UpdateScore(currentScore);
+                }
+                cameraController.MoveOnStep();
+                cubeSpawner.SpawnCube();
+            }
             if (Input.GetMouseButtonDown(0))
             {
                 if(isGameStart == false)
@@ -26,15 +37,15 @@ public class GameController : MonoBehaviour
                 }
                 if (cubeSpawner.CurrentCube != null)
                 {
-                    bool isGameOer = cubeSpawner.CurrentCube.Arrangement();
-                    if(isGameOer == true)
+                    bool isGameOver = cubeSpawner.CurrentCube.Arrangement();
+                    if(isGameOver == true)
                     {
                         OnGameOver();
                         yield break;
                     }
                     currentScore++;
                     uiController.UpdateScore(currentScore);
-                    cubeSpawner.CurrentCube.Arrangement();
+                    //cubeSpawner.CurrentCube.Arrangement();
                 }
                 cameraController.MoveOnStep();
                 cubeSpawner.SpawnCube();

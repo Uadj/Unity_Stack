@@ -10,6 +10,8 @@ public class CubeSpawner : MonoBehaviour
     private Transform[] cubeSpawnPoints;
     [SerializeField]
     private Transform movingCubePrefab;
+    [SerializeField]
+    private PerfectController perfectController;
 
     [field:SerializeField]
     public Transform LastCube { set; get; }
@@ -42,7 +44,7 @@ public class CubeSpawner : MonoBehaviour
         }
         clone.localScale = new Vector3(LastCube.localScale.x, movingCubePrefab.localScale.y, LastCube.localScale.z);
         clone.GetComponent<MeshRenderer>().material.color = GetRandomColor();
-        clone.GetComponent<MovingCube>().Setup(this, moveAxis);
+        clone.GetComponent<MovingCube>().Setup(this, perfectController, moveAxis);
         moveAxis = (MoveAxis)(((int)moveAxis + 1) % cubeSpawnPoints.Length);
 
         //LastCube = clone;
